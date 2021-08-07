@@ -1,25 +1,27 @@
+import sys
+import time
 import urllib.request
 import json
 
-
-def get_iss_data_dict():
-    req = urllib.request.Request("http://api.open-notify.org/iss-now.json")
-    response = urllib.request.urlopen(req)
-
-    obj = json.loads(response.read())
-
-    print(obj['timestamp'])
-    print(obj)
+from crafts import Crafts
+from iss import ISSTracking
 
 
-def get_people_space():
-    req = urllib.request.Request("http://api.open-notify.org/astros.json")
-    response = urllib.request.urlopen(req)
+def main():
+    if "loc" in sys.argv[1:len(sys.argv)]:
+        iss = ISSTracking()
+        loc = iss.get_location()
+        print("The ISS current location at {} is at {}".format(loc[0], loc[1]))
+    if "people" in sys.argv[1:len(sys.argv)]:
+        crafts = Crafts()
+        craft_people_dict = crafts.get_craft_people()
 
-    obj = json.loads(response.read())
+        for k in craft_people_dict.keys():
+            print("There are {} people aboard the {}. They are {}".format(len(craft_people_dict[k]), k,
+                                                                          craft_people_dict[k]))
+    if "pass" in sys.argv[1:len(sys.argv)]:
+        print("pass has been deprecated by the api")
 
-    print(obj)
 
-
-get_iss_data_dict()
-get_people_space()
+if __name__ == "__main__":
+    main()
